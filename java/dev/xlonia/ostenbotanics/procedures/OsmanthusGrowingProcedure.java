@@ -1,0 +1,26 @@
+package dev.xlonia.ostenbotanics.procedures;
+
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.BlockPos;
+
+import dev.xlonia.ostenbotanics.init.OstenBotanicsModBlocks;
+
+public class OsmanthusGrowingProcedure {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+		if (Mth.nextInt(RandomSource.create(), 0, 3) == 3) {
+			world.setBlock(BlockPos.containing(x, y, z), Blocks.AIR.defaultBlockState(), 3);
+			if (world instanceof ServerLevel _level)
+				_level.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE).getHolderOrThrow(FeatureUtils.createKey("osten_botanics:osmanthus_tree")).value().place(_level, _level.getChunkSource().getGenerator(), _level.getRandom(),
+						BlockPos.containing(x, y, z));
+			if (world.isEmptyBlock(BlockPos.containing(x, y, z))) {
+				world.setBlock(BlockPos.containing(x, y, z), OstenBotanicsModBlocks.OSMANTHUS_SAPLING.get().defaultBlockState(), 3);
+			}
+		}
+	}
+}
